@@ -1460,7 +1460,8 @@ export function renderHTML(): string {
     <div class="nav">
       <a id="dexLink" href="https://dexscreener.com/solana" target="_blank" rel="noopener">DEX</a>
       <a id="pumpLink" href="https://pump.fun" target="_blank" rel="noopener">PUMP</a>
-      <a href="https://x.com" target="_blank" rel="noopener">X</a>
+      <a href="https://x.com/i/communities/2006545041955684428" target="_blank" rel="noopener">X</a>
+      <a href="https://t.me/burncoin_portal" target="_blank" rel="noopener">TG</a>
       <a id="mcPill" class="mc-pill" href="#" target="_blank" rel="noopener" title="DexScreener" style="display:none;">
         <span class="mc-label">MC</span><span id="mcValue">—</span>
       </a>

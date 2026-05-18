@@ -13,6 +13,7 @@ import { BuybackBurner } from "./buyback";
 import { tracker } from "./activity";
 import { startDashboard } from "./dashboard";
 import { waitForCreatedMint } from "./mint-watcher";
+import { snapshotHolders } from "./holders";
 import { logger } from "./logger";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -112,8 +113,26 @@ async function main() {
     }
   };
 
+  // Exclude the dev wallet, buyer wallet, and marketing wallet from the
+  // holder leaderboard so it reflects actual community holders only.
+  const holderExcludes = new Set<string>([
+    creator.publicKey.toBase58(),
+    buyer.publicKey.toBase58(),
+    marketingPubkey.toBase58(),
+  ]);
+
+  const refreshHolders = async () => {
+    try {
+      const rows = await snapshotHolders(burnMint.toBase58());
+      tracker.setHolders(rows, holderExcludes, 100);
+    } catch (e) {
+      logger.warn(`Holder snapshot failed: ${e instanceof Error ? e.message : e}`);
+    }
+  };
+
   await updateBalances();
   await refreshSupply();
+  refreshHolders().catch(() => { /* first one runs in background, won't block boot */ });
 
   const runCycle = async () => {
     try {
@@ -228,6 +247,9 @@ async function main() {
 
       await updateBalances();
       await refreshSupply();
+      // Holder snapshot is the heaviest RPC call — run it without blocking
+      // the cycle's exit. State updates by the next poll.
+      refreshHolders().catch(() => { /* best-effort */ });
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       const stack = e instanceof Error && e.stack ? `\n${e.stack}` : "";

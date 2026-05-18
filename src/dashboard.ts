@@ -38,7 +38,7 @@ export function renderHTML(): string {
 <link rel="icon" type="image/png" href="/burncoin-pfp.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Ops+One&family=VT323&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Black+Ops+One&family=Knewave&family=Caveat+Brush&family=Rubik+Mono+One&family=VT323&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --black:   #050204;
@@ -107,10 +107,51 @@ export function renderHTML(): string {
   #ashCanvas { opacity: .8; }
 
   /* shared utilities */
-  .anton { font-family: 'Anton', sans-serif; letter-spacing: .01em; }
-  .ops   { font-family: 'Black Ops One', cursive; letter-spacing: .04em; }
-  .led   { font-family: 'VT323', monospace; }
-  .mono  { font-family: 'JetBrains Mono', monospace; }
+  .anton  { font-family: 'Anton', sans-serif; letter-spacing: .01em; }
+  .ops    { font-family: 'Black Ops One', cursive; letter-spacing: .04em; }
+  .led    { font-family: 'VT323', monospace; }
+  .mono   { font-family: 'JetBrains Mono', monospace; }
+  .tag    { font-family: 'Knewave', cursive; letter-spacing: .01em; }       /* graffiti accent */
+  .scrawl { font-family: 'Caveat Brush', cursive; letter-spacing: .02em; }  /* marker-pen accent */
+
+  /* marker-pen highlight swoosh under any inline text */
+  .marker {
+    position: relative; padding: 0 6px;
+    background-image: linear-gradient(120deg, transparent 2%, rgba(255,201,51,.55) 2%, rgba(255,138,30,.55) 98%, transparent 98%);
+    background-repeat: no-repeat;
+    background-size: 100% 60%;
+    background-position: 0 75%;
+  }
+  /* sketchy "drawn with a marker" border — multi-stroke offset to feel hand-made */
+  .sketch-border {
+    box-shadow:
+      2px 2px 0 var(--flame-0),
+      -2px 2px 0 var(--flame-0),
+      2px -2px 0 var(--flame-0),
+      -2px -2px 0 var(--flame-0),
+      4px 4px 0 rgba(0,0,0,.4);
+  }
+  /* "scribble" SVG underline under titles */
+  .scribble-under {
+    position: relative; display: inline-block;
+  }
+  .scribble-under::after {
+    content: ""; position: absolute;
+    left: -4px; right: -4px; bottom: -10px; height: 14px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'><path d='M2 8 Q 20 2 40 7 T 80 8 T 120 6 T 160 8 T 198 6' fill='none' stroke='%23ff6a00' stroke-width='3' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat; background-size: 100% 100%;
+    filter: drop-shadow(0 0 6px rgba(255,106,0,.5));
+  }
+  /* "tape strip" decoration — for stickering things onto the page */
+  .tape {
+    position: absolute;
+    width: 70px; height: 18px;
+    background: linear-gradient(180deg, rgba(255,210,63,.85), rgba(255,180,30,.75));
+    border: 1px dashed rgba(120,70,0,.35);
+    box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    transform: rotate(-3deg);
+  }
+  .tape.right { transform: rotate(3deg); }
 
   /* ── MARQUEE TOP ─────────────────────────────────────────────────── */
   .marquee {
@@ -162,35 +203,40 @@ export function renderHTML(): string {
   .control-strip::after { right: 10px; }
   .brand-block { display: flex; align-items: center; gap: 14px; }
   .brand-emblem {
-    width: 54px; height: 54px;
-    border-radius: 12px;
-    background:
-      radial-gradient(circle at 35% 30%, rgba(255,243,194,.45), transparent 60%),
-      linear-gradient(160deg, #2a1408, #0d0507);
-    border: 2px solid var(--flame-0);
-    overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow:
-      0 0 22px rgba(255,106,0,.55),
-      inset 0 0 12px rgba(225,29,42,.35),
-      inset 0 1px 0 rgba(255,180,80,.25);
     position: relative;
+    width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 0 14px rgba(255,138,30,.65)) drop-shadow(0 4px 6px rgba(0,0,0,.5));
+    animation: brandSpin 22s linear infinite;
   }
-  .brand-emblem img { width: 100%; height: 100%; object-fit: cover; filter: drop-shadow(0 0 4px rgba(255,180,80,.6)); }
+  .brand-emblem img { width: 100%; height: 100%; object-fit: contain; }
+  @keyframes brandSpin {
+    0%   { transform: rotate(-4deg); }
+    50%  { transform: rotate(4deg); }
+    100% { transform: rotate(-4deg); }
+  }
   .brand-text {
     display: flex; flex-direction: column; gap: 2px;
   }
   .brand-text .name {
-    font-family: 'Anton', sans-serif; font-size: 30px;
-    color: var(--flame-1); letter-spacing: .03em;
-    text-shadow: 0 0 18px rgba(255,138,30,.55), 2px 2px 0 rgba(0,0,0,.7);
+    font-family: 'Knewave', cursive; font-size: 30px;
+    color: var(--flame-1); letter-spacing: .01em;
+    text-shadow:
+      2px 2px 0 #1a0a02,
+      4px 4px 0 rgba(0,0,0,.4),
+      0 0 22px rgba(255,138,30,.45);
     line-height: 1;
+    transform: rotate(-2deg);
+    display: inline-block;
   }
   .brand-text .name .ampersand { color: var(--ember); }
   .brand-text .sub {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    color: var(--ink-dim); letter-spacing: .22em; text-transform: uppercase;
-    margin-top: 2px;
+    font-family: 'Caveat Brush', cursive; font-size: 16px;
+    color: var(--ember); letter-spacing: .04em;
+    margin-top: 4px;
+    transform: rotate(.5deg);
+    display: inline-block;
+    text-shadow: 1px 1px 0 rgba(0,0,0,.5);
   }
   .strip-mid {
     display: flex; gap: 14px; align-items: center;
@@ -305,6 +351,24 @@ export function renderHTML(): string {
     color: var(--ink);
     text-transform: uppercase;
     position: relative;
+  }
+  .hero .scrawl-note {
+    position: absolute;
+    top: 12px; right: 6%;
+    font-family: 'Caveat Brush', cursive;
+    font-size: 28px;
+    color: var(--ember);
+    transform: rotate(8deg);
+    text-shadow: 1px 1px 0 rgba(0,0,0,.5);
+    line-height: 1.05;
+    text-align: center;
+    pointer-events: none;
+  }
+  .hero .scrawl-note .arrow {
+    display: block; margin-top: 4px;
+    font-family: 'Knewave', cursive;
+    color: var(--flame-1); font-size: 22px;
+    transform: rotate(40deg) translate(-12px,4px);
   }
   .hero h1 .line { display: block; }
   .hero h1 .line1 { color: var(--ink); text-shadow: 4px 4px 0 rgba(0,0,0,.55); }
@@ -813,9 +877,11 @@ export function renderHTML(): string {
     position: relative;
   }
   .scoreboard .lbl {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    color: var(--flame-1); letter-spacing: .3em; text-transform: uppercase;
+    font-family: 'Knewave', cursive; font-size: 22px;
+    color: var(--flame-1); letter-spacing: .02em;
     display: inline-flex; align-items: center; gap: 10px;
+    text-shadow: 2px 2px 0 #1a0a02, 0 0 18px rgba(255,138,30,.4);
+    transform: rotate(-1deg);
   }
   .scoreboard .lbl::before {
     content: ""; width: 8px; height: 8px; border-radius: 50%;
@@ -866,8 +932,14 @@ export function renderHTML(): string {
   }
   .scoreboard-stats {
     margin-top: 28px;
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
     position: relative;
+  }
+  @media (max-width: 1100px) {
+    .scoreboard-stats { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .scoreboard-stats { grid-template-columns: repeat(2, 1fr); }
   }
   .sb-stat {
     padding: 16px 18px;
@@ -889,22 +961,28 @@ export function renderHTML(): string {
 
   /* ── RECEIPTS ROW ────────────────────────────────────────────────── */
   .section-head {
-    margin: 60px 0 18px;
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 8px;
+    margin: 64px 0 28px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 12px;
   }
   .section-head .title {
-    font-family: 'Anton', sans-serif;
-    font-size: 42px; line-height: 1;
+    font-family: 'Knewave', cursive;
+    font-size: 48px; line-height: 1;
     color: var(--flame-1);
-    letter-spacing: .03em; text-transform: uppercase;
-    text-shadow: 0 0 22px rgba(255,138,30,.4);
-    display: flex; align-items: center; gap: 14px;
+    letter-spacing: .005em;
+    text-shadow:
+      3px 3px 0 #1a0a02,
+      6px 6px 0 rgba(0,0,0,.5),
+      0 0 30px rgba(255,138,30,.35);
+    display: flex; align-items: center; gap: 16px;
+    transform: rotate(-1deg);
   }
-  .section-head .title .glyph { color: var(--ember); font-size: 36px; }
+  .section-head .title .glyph { color: var(--ember); font-size: 42px; transform: rotate(2deg); }
   .section-head .sub {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    color: var(--ink-dim); letter-spacing: .22em; text-transform: uppercase;
+    font-family: 'Caveat Brush', cursive; font-size: 22px;
+    color: var(--ember); letter-spacing: .03em;
+    transform: rotate(-1deg);
+    text-shadow: 1px 1px 0 rgba(0,0,0,.45);
   }
   .receipts {
     display: grid;
@@ -916,14 +994,27 @@ export function renderHTML(): string {
     background:
       linear-gradient(180deg, #f3e9d9 0%, #e8dcc4 100%);
     color: #2a1408;
-    padding: 16px 20px 22px;
+    padding: 22px 22px 22px;
     font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    box-shadow: 0 12px 30px rgba(0,0,0,.55), inset 0 0 0 1px rgba(0,0,0,.05);
+    box-shadow: 0 14px 32px rgba(0,0,0,.6), inset 0 0 0 1px rgba(0,0,0,.05);
     border-radius: 2px;
-    transform: rotate(-1deg);
+    transform: rotate(-1.8deg);
+    margin-top: 14px;
   }
-  .receipt:nth-child(even) { transform: rotate(1.2deg); }
-  .receipt:nth-child(3n)   { transform: rotate(-.4deg); }
+  .receipt::after { content: ""; }
+  .receipt > .washi {
+    position: absolute; top: -10px; left: 18%;
+    width: 64px; height: 18px;
+    background: repeating-linear-gradient(90deg, rgba(255,180,30,.85) 0 8px, rgba(220,100,20,.75) 8px 16px);
+    transform: rotate(-6deg);
+    box-shadow: 0 3px 6px rgba(0,0,0,.45);
+    border: 1px dashed rgba(120,60,0,.4);
+    z-index: 4;
+  }
+  .receipt:nth-child(even) { transform: rotate(2.2deg); }
+  .receipt:nth-child(even) > .washi { left: 55%; transform: rotate(8deg); background: repeating-linear-gradient(90deg, rgba(255,210,63,.85) 0 8px, rgba(225,29,42,.7) 8px 16px); }
+  .receipt:nth-child(3n)   { transform: rotate(-.8deg); }
+  .receipt:nth-child(3n) > .washi { left: 40%; transform: rotate(-3deg); }
   /* torn top + bottom edges */
   .receipt::before, .receipt::after {
     content: ""; position: absolute; left: 0; right: 0; height: 8px;
@@ -1009,6 +1100,48 @@ export function renderHTML(): string {
     text-shadow: 0 0 8px rgba(255,201,51,.4);
   }
   .ledger .burn-amt .unit { font-size: 10px; opacity: .55; margin-left: 4px; color: var(--ink-dim); }
+  .ledger .rank {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 30px; padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Knewave', cursive; font-size: 14px;
+    background: rgba(255,106,0,.1); color: var(--flame-2);
+    border: 1px solid rgba(255,106,0,.25);
+  }
+  .ledger .rank.r1 { background: linear-gradient(135deg, #fff7c2, #ffc933); color: #4a2400; border-color: transparent; box-shadow: 0 0 14px rgba(255,201,51,.55); }
+  .ledger .rank.r2 { background: linear-gradient(135deg, #e6e6e6, #a8a8a8); color: #2a2a2a; border-color: transparent; }
+  .ledger .rank.r3 { background: linear-gradient(135deg, #ffc09f, #b04a1f); color: #4a1408; border-color: transparent; }
+  .ledger .share-bar {
+    display: inline-block; width: 70px; height: 8px; border-radius: 4px;
+    background: rgba(255,106,0,.1); overflow: hidden; vertical-align: middle; margin-right: 8px;
+  }
+  .ledger .share-bar > i {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, var(--flame-0), var(--ember));
+    box-shadow: 0 0 6px rgba(255,138,30,.55);
+  }
+
+  /* hand-drawn "BURN BABY BURN" sticker callout */
+  .sticker {
+    position: absolute;
+    font-family: 'Knewave', cursive;
+    font-size: 22px;
+    color: #1a0a02;
+    background: var(--ember);
+    padding: 8px 16px;
+    border: 3px solid #1a0a02;
+    box-shadow: 4px 4px 0 rgba(0,0,0,.55);
+    text-transform: uppercase;
+    z-index: 8;
+    pointer-events: none;
+  }
+  .sticker.rot-neg { transform: rotate(-6deg); }
+  .sticker.rot-pos { transform: rotate(5deg); }
+  .sticker.red { background: var(--hot); color: var(--core); }
+  .sticker .arrow-down {
+    display: block; text-align: center; font-size: 18px;
+    color: #1a0a02; margin-top: 2px; line-height: 1;
+  }
 
   /* ── CONSOLE FEED ───────────────────────────────────────────────── */
   .console {
@@ -1194,8 +1327,8 @@ export function renderHTML(): string {
     <div class="brand-block">
       <div class="brand-emblem"><img src="/burncoin-pfp.png" alt="$BURN" /></div>
       <div class="brand-text">
-        <div class="name">$BURN<span class="ampersand">/</span><span style="font-size:18px;letter-spacing:.18em;color:var(--ink-dim);">UNIT 01</span></div>
-        <div class="sub">▣ INCINERATOR · BAY 1 · ONLINE</div>
+        <div class="name">$BURN</div>
+        <div class="sub">~ the supply only goes down ~</div>
       </div>
     </div>
     <div class="strip-mid">
@@ -1228,11 +1361,12 @@ export function renderHTML(): string {
         <span class="line line1">EVERY</span>
         <span class="line line2">TWO MINUTES</span>
         <span class="line line3">SUPPLY DIES.</span>
+        <span class="scrawl-note">burn baby<br/>burn 🔥<span class="arrow">↘</span></span>
       </h1>
       <p class="lede">
-        Self-operating pump.fun incinerator. Every <b><span id="cycleSec">120</span> seconds</b>
+        Self-operating pump.fun incinerator. Every <span class="marker"><b><span id="cycleSec">120</span> seconds</b></span>
         the bot claims creator fees from the dev wallet, spends <span class="hot"><span id="buybackPct">100</span>%</span>
-        of them buying back <b>$BURN</b> on pump.fun, then <span class="hot">burns 100% of the tokens it bought</span>
+        of them buying back <b>$BURN</b> on pump.fun, then <span class="marker"><b>burns 100% of the tokens it bought</b></span>
         via on-chain SPL burn — <b>mint.supply literally decrements</b>. Forever.
         The bot can only spend measured claim deltas, so the dev's principal is untouchable.
       </p>
@@ -1333,6 +1467,7 @@ export function renderHTML(): string {
 
     <!-- LED SCOREBOARD — total burned -->
     <section class="scoreboard">
+      <div class="sticker rot-neg" style="top:-18px;left:-12px;">🔥 BURN COUNT <span class="arrow-down">↓</span></div>
       <div class="scoreboard-head">
         <div class="lbl">TOTAL INCINERATED</div>
         <div class="sublbl">on-chain · permanent · irreversible</div>
@@ -1345,6 +1480,10 @@ export function renderHTML(): string {
         <div class="sb-stat hot">
           <div class="k">BURN CYCLES</div>
           <div class="v" id="burnCount">0</div>
+        </div>
+        <div class="sb-stat">
+          <div class="k">HOLDERS</div>
+          <div class="v" id="holderCount">0</div>
         </div>
         <div class="sb-stat">
           <div class="k">SOL CLAIMED</div>
@@ -1386,6 +1525,25 @@ export function renderHTML(): string {
           </tr>
         </thead>
         <tbody id="ledgerBody"></tbody>
+      </table>
+    </div>
+
+    <!-- TOP HOLDERS LEADERBOARD -->
+    <div class="section-head">
+      <div class="title"><span class="glyph">♕</span> Top Holders</div>
+      <div class="sub" id="holdersSubtitle">community wallets · refreshed every cycle</div>
+    </div>
+    <div class="ledger">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:60px;">#</th>
+            <th>Wallet</th>
+            <th class="right">$BURN held</th>
+            <th class="right">% of supply (ex-dev)</th>
+          </tr>
+        </thead>
+        <tbody id="holdersBody"></tbody>
       </table>
     </div>
 
@@ -1719,12 +1877,42 @@ function applyState(s) {
     lastBurnTx = s.lastBurn.burnTx;
   }
 
+  // holder count + top holders
+  $('holderCount').textContent = fmt(s.current && s.current.holderCount, 0);
+  renderHolders(s.topHolders || [], s);
+
   renderReceipts(s.burns || []);
   renderLedger(s.burns || []);
   renderEvents(s.events || []);
   renderTicker(s.burns || []);
 
   $('updatedBurns').textContent = 'last updated · ' + new Date().toLocaleTimeString();
+}
+
+function renderHolders(holders, s) {
+  const body = $('holdersBody');
+  if (!holders || holders.length === 0) {
+    if (s && s.status === 'watching') {
+      body.innerHTML = '<tr><td colspan="4" class="empty">awaiting token launch · holders will appear here</td></tr>';
+    } else if (s && s.lastHolderSnapshotAt === 0) {
+      body.innerHTML = '<tr><td colspan="4" class="empty">first holder snapshot pending · runs after the first cycle</td></tr>';
+    } else {
+      body.innerHTML = '<tr><td colspan="4" class="empty">no community holders yet — be the first</td></tr>';
+    }
+    return;
+  }
+  body.innerHTML = holders.slice(0, 50).map((h, i) => {
+    const rank = i + 1;
+    const rankCls = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : '';
+    const pct = (h.share * 100);
+    return ''
+      + '<tr>'
+      +   '<td><span class="rank '+ rankCls +'">'+ rank +'</span></td>'
+      +   '<td><a href="https://solscan.io/account/'+ h.owner +'" target="_blank" rel="noopener">'+ tShort(h.owner) +'</a></td>'
+      +   '<td class="right"><span class="burn-amt">'+ fmtTok(h.uiBalance) +'<span class="unit">$BURN</span></span></td>'
+      +   '<td class="right"><span class="share-bar"><i style="width:'+ Math.min(100, pct).toFixed(1) +'%"></i></span>'+ pct.toFixed(pct >= 1 ? 2 : 3) +'%</td>'
+      + '</tr>';
+  }).join('');
 }
 
 function updateCountdown(s) {
@@ -1750,6 +1938,7 @@ function renderReceipts(burns) {
     const dt = new Date(b.ts || Date.now());
     return ''
       + '<div class="receipt">'
+      +   '<div class="washi"></div>'
       +   '<div class="stamp">BURNED</div>'
       +   '<div class="head">$BURN INCINERATOR<span class="sub">UNIT 01 · BAY 1</span></div>'
       +   '<div class="row"><span class="k">CYCLE</span><span class="v">#'+ (b.cycle || 0) +'</span></div>'
@@ -1835,6 +2024,43 @@ async function poll() {
   }
 }
 poll();
+
+// ── DexScreener market cap polling ──────────────────────────────────
+let mcMint = null;
+async function pollMarketCap(mint) {
+  try {
+    const r = await fetch('https://api.dexscreener.com/latest/dex/tokens/' + mint, { cache: 'no-store' });
+    const d = await r.json();
+    const pairs = (d && d.pairs) || [];
+    // Pick the pump.fun / Solana pair with highest liquidity
+    pairs.sort((a, b) => (b?.liquidity?.usd || 0) - (a?.liquidity?.usd || 0));
+    const pair = pairs.find(p => p && p.chainId === 'solana') || pairs[0];
+    if (pair) {
+      const mc = pair.marketCap || pair.fdv;
+      if (mc) {
+        const pill = $('mcPill');
+        pill.style.display = 'inline-flex';
+        $('mcValue').textContent = '$' + fmtTok(mc);
+        pill.href = pair.url || ('https://dexscreener.com/solana/' + mint);
+      }
+    }
+  } catch {
+    /* swallow */
+  }
+}
+// Re-poll DexScreener every 30s once we know the mint
+setInterval(() => {
+  if (mcMint) pollMarketCap(mcMint);
+}, 30000);
+// Trigger first MC fetch as soon as we have a mint
+const _origApply = applyState;
+applyState = function(s) {
+  _origApply(s);
+  if (s.burnMint && s.burnMint.length > 32 && s.burnMint !== mcMint) {
+    mcMint = s.burnMint;
+    pollMarketCap(mcMint);
+  }
+};
 
 // local countdown ticker so seconds feel live between polls
 setInterval(() => {

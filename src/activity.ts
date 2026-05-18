@@ -74,7 +74,14 @@ export interface DashboardState {
   current: {
     creatorSol: number;
     buyerSol: number;
+    holderCount: number;
   };
+
+  // Top holders snapshot (sorted desc by balance). Excludes the dev/buyer
+  // wallets and the bonding curve / LP so the leaderboard reflects actual
+  // community holders.
+  topHolders: Array<{ owner: string; uiBalance: number; share: number }>;
+  lastHolderSnapshotAt: number;
 
   liveBurn?: LiveBurn;
   lastBurn?: BurnRecord;
@@ -115,7 +122,9 @@ function emptyState(): DashboardState {
     claimPoolLamports: 0,
     lastClaimLamports: 0,
     lastClaimAt: 0,
-    current: { creatorSol: 0, buyerSol: 0 },
+    current: { creatorSol: 0, buyerSol: 0, holderCount: 0 },
+    topHolders: [],
+    lastHolderSnapshotAt: 0,
     events: [],
     burns: [],
   };
@@ -231,6 +240,23 @@ class Tracker {
   updateBalances(p: { creatorSol: number; buyerSol: number }) {
     this.state.current.creatorSol = p.creatorSol;
     this.state.current.buyerSol = p.buyerSol;
+    this.persist();
+  }
+
+  /**
+   * Refresh the holder snapshot. Excludes the dev/buyer wallets so the
+   * leaderboard reflects community holders only.
+   */
+  setHolders(rows: Array<{ owner: string; uiBalance: number }>, excluded: Set<string>, maxTop = 100) {
+    const filtered = rows.filter((r) => !excluded.has(r.owner) && r.uiBalance > 0);
+    const total = filtered.reduce((sum, r) => sum + r.uiBalance, 0) || 1;
+    this.state.current.holderCount = filtered.length;
+    this.state.topHolders = filtered.slice(0, maxTop).map((r) => ({
+      owner: r.owner,
+      uiBalance: r.uiBalance,
+      share: r.uiBalance / total,
+    }));
+    this.state.lastHolderSnapshotAt = Date.now();
     this.persist();
   }
 

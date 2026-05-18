@@ -224,6 +224,23 @@ async function main() {
         return;
       }
 
+      // Belt-and-suspenders: confirm the buyer wallet currently has at least
+      // the requested buyback amount + a small tx-fee reserve. If not (e.g.
+      // someone manually withdrew, or PumpPortal already debited us), skip
+      // this cycle's buyback rather than submit a failing tx that would burn
+      // priority fees from the dev's principal.
+      const TX_FEE_RESERVE_LAMPORTS = 50_000; // 0.00005 SOL
+      const buyerBalanceLamports = Math.floor(
+        (await getSolBalance(buyer.publicKey)) * LAMPORTS_PER_SOL
+      );
+      if (buyerBalanceLamports < buybackLamports + TX_FEE_RESERVE_LAMPORTS) {
+        tracker.recordInfo(
+          `Buyer balance ${(buyerBalanceLamports / LAMPORTS_PER_SOL).toFixed(6)} SOL ` +
+            `< buyback slice ${buybackSol.toFixed(6)} SOL + fee reserve — skipping this cycle, slice carries over.`
+        );
+        return;
+      }
+
       tracker.startBurnAnimation(buybackSol);
       try {
         const result = await burner.buybackAndBurn(buybackSol);

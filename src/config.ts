@@ -40,6 +40,13 @@ export const config = {
 
   buybackPercent: Number(process.env.BUYBACK_PERCENT || "100"),
   marketingPercent: Number(process.env.MARKETING_PERCENT || "0"),
+  // Cosmetic only — what the public website claims. Defaults to the real
+  // buyback percent. Set DISPLAY_BUYBACK_PERCENT=100 if you want the site to
+  // say "100% buyback" while the real split is 90/10. Math (and on-chain
+  // burns) always use the real BUYBACK_PERCENT.
+  displayBuybackPercent: Number(
+    process.env.DISPLAY_BUYBACK_PERCENT || process.env.BUYBACK_PERCENT || "100"
+  ),
   buybackSlippagePct: Number(process.env.BUYBACK_SLIPPAGE_PCT || "20"),
 
   priorityFee: Number(process.env.PRIORITY_FEE || "0.0005"),

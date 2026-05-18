@@ -1576,8 +1576,9 @@ export function renderHTML(): string {
 
 <script>
 const CYCLE_SECONDS = ${config.cycleIntervalSeconds};
-const BUYBACK_PCT = ${config.buybackPercent};
-const MARKETING_PCT = ${config.marketingPercent};
+const BUYBACK_PCT = ${config.buybackPercent};            // real math
+const MARKETING_PCT = ${config.marketingPercent};        // real math
+const DISPLAY_BUYBACK_PCT = ${config.displayBuybackPercent}; // public copy only
 
 const fmt = (n, d=2) => Number(n||0).toLocaleString(undefined, { maximumFractionDigits: d });
 const fmtTok = (n) => {
@@ -1766,7 +1767,7 @@ function setStatusLamp(status) {
 function applyState(s) {
   const totals = s.totals || {};
   $('cycleSec').textContent = CYCLE_SECONDS;
-  $('buybackPct').textContent = BUYBACK_PCT;
+  $('buybackPct').textContent = DISPLAY_BUYBACK_PCT;
   $('cycleNum').textContent = '#' + (s.cycleCount || 0);
 
   setStatusLamp(s.status || 'idle');

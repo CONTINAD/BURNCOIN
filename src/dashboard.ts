@@ -497,22 +497,26 @@ export function renderHTML(): string {
   .metal > .rivet-br { right: 9px; }
   .panel-label {
     position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-    font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
-    letter-spacing: .35em; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    letter-spacing: .22em; text-transform: uppercase;
     color: var(--ink-dim);
-    padding: 2px 12px;
+    padding: 2px 10px;
     background: #0a0a0c; border: 1px solid #1f1f24; border-radius: 99px;
+    white-space: nowrap;
+    max-width: calc(100% - 36px);
+    overflow: hidden; text-overflow: ellipsis;
+    z-index: 4;
   }
 
   /* LEFT panel: gauges */
   .panel-left {
-    padding: 30px 16px 22px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    padding: 30px 14px 18px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
   }
   /* mercury-style temperature gauge */
   .gauge-temp {
     position: relative;
-    width: 50px; height: 240px;
+    width: 44px; height: 200px;
     background: linear-gradient(180deg, #0a0306, #1a0a08);
     border: 2px solid #0a0306;
     border-radius: 28px;
@@ -544,7 +548,7 @@ export function renderHTML(): string {
   }
   .gauge-temp .bulb-bottom {
     position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
-    width: 68px; height: 68px; border-radius: 50%;
+    width: 58px; height: 58px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, var(--core), var(--ember) 25%, var(--flame-0) 55%, var(--hot) 100%);
     box-shadow:
       0 0 30px rgba(255,138,30,.85),
@@ -558,26 +562,27 @@ export function renderHTML(): string {
     100% { box-shadow: 0 0 48px rgba(255,201,51,1),  inset 0 -8px 14px rgba(90,4,8,.6), inset 0 6px 8px rgba(255,255,255,.35); }
   }
   .gauge-label {
-    font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
-    color: var(--ink-dim); letter-spacing: .25em; text-transform: uppercase;
-    margin-top: 18px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--ink-dim); letter-spacing: .22em; text-transform: uppercase;
+    margin-top: 12px;
   }
   .gauge-readout {
-    font-family: 'VT323', monospace; font-size: 32px;
+    font-family: 'VT323', monospace; font-size: 28px;
     color: var(--ember); letter-spacing: .04em; line-height: 1;
     text-shadow: 0 0 12px rgba(255,201,51,.7);
   }
-  .gauge-readout .unit { font-size: 14px; opacity: .6; margin-left: 4px; }
+  .gauge-readout .unit { font-size: 13px; opacity: .6; margin-left: 4px; }
 
   .lamp-rack {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    width: 100%; margin-top: 4px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    width: 100%; margin-top: 2px;
   }
-  .lamp-rack .lamp { font-size: 9.5px; padding: 6px 8px; justify-content: center; }
+  .lamp-rack .lamp { font-size: 8.5px; padding: 5px 6px; justify-content: center; gap: 6px; letter-spacing: .1em; }
+  .lamp-rack .lamp .bulb { width: 7px; height: 7px; }
 
   /* RIGHT panel: supply melt tower */
   .panel-right {
-    padding: 30px 18px 22px;
+    padding: 30px 14px 22px;
     display: flex; flex-direction: column; align-items: center; gap: 14px;
   }
   .melt-tower {
@@ -632,11 +637,17 @@ export function renderHTML(): string {
     20%  { opacity: 1; }
     100% { transform: translateY(340px); opacity: 0; }
   }
-  .melt-tower .scale {
-    position: absolute; left: -22px; top: 6px; bottom: 6px; width: 18px;
+  .melt-wrap {
+    position: relative;
+    display: flex; align-items: stretch; gap: 8px;
+  }
+  .melt-wrap .scale {
     display: flex; flex-direction: column; justify-content: space-between;
-    font-family: 'JetBrains Mono', monospace; font-size: 8.5px;
-    color: var(--ink-dim); text-align: right;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--ink-2); text-align: right;
+    padding: 6px 0;
+    min-width: 26px;
+    pointer-events: none;
   }
   .melt-readout {
     text-align: center;
@@ -861,15 +872,17 @@ export function renderHTML(): string {
       inset 0 1px 0 rgba(255,255,255,.05),
       inset 0 0 40px rgba(225,29,42,.15),
       0 18px 60px rgba(0,0,0,.55);
-    overflow: hidden;
+    /* overflow:visible so the sticker can hang off the corner */
   }
-  /* dotted matrix backdrop inside scoreboard glass */
+  /* dotted matrix backdrop inside scoreboard glass — clipped to the rounded box */
   .scoreboard::before {
     content: "";
     position: absolute; inset: 0;
     background-image: radial-gradient(circle, rgba(255,106,0,.05) 1px, transparent 1px);
     background-size: 14px 14px;
     pointer-events: none;
+    border-radius: inherit;
+    overflow: hidden;
   }
   .scoreboard::after {
     /* scanlines */
@@ -878,11 +891,18 @@ export function renderHTML(): string {
     background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 4px);
     pointer-events: none;
     mix-blend-mode: multiply;
+    border-radius: inherit;
+    overflow: hidden;
   }
   .scoreboard .scoreboard-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    flex-wrap: wrap; gap: 10px;
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 4px;
     position: relative;
+    /* leave room on the right so the sticker doesn't collide with anything */
+    padding-right: 180px;
+  }
+  @media (max-width: 720px) {
+    .scoreboard .scoreboard-head { padding-right: 0; }
   }
   .scoreboard .lbl {
     font-family: 'Knewave', cursive; font-size: 22px;
@@ -1133,15 +1153,16 @@ export function renderHTML(): string {
   .sticker {
     position: absolute;
     font-family: 'Knewave', cursive;
-    font-size: 22px;
+    font-size: 18px;
     color: #1a0a02;
     background: var(--ember);
-    padding: 8px 16px;
+    padding: 6px 12px;
     border: 3px solid #1a0a02;
     box-shadow: 4px 4px 0 rgba(0,0,0,.55);
     text-transform: uppercase;
     z-index: 8;
     pointer-events: none;
+    line-height: 1.1;
   }
   .sticker.rot-neg { transform: rotate(-6deg); }
   .sticker.rot-pos { transform: rotate(5deg); }
@@ -1427,7 +1448,7 @@ export function renderHTML(): string {
 
       <!-- LEFT: temperature + lamps -->
       <div class="metal panel-left">
-        <div class="panel-label">UNIT 01 · CTRL</div>
+        <div class="panel-label">CONTROL</div>
         <div class="gauge-temp">
           <div class="ticks"></div>
           <div class="mercury" id="tempMercury"></div>
@@ -1437,7 +1458,7 @@ export function renderHTML(): string {
         <div class="gauge-readout"><span id="tempReadout">427</span><span class="unit">°C</span></div>
         <div class="lamp-rack">
           <span class="lamp"><span class="bulb yellow" id="lampClaim"></span>CLAIM</span>
-          <span class="lamp"><span class="bulb" id="lampBuy"></span>BUYBACK</span>
+          <span class="lamp"><span class="bulb" id="lampBuy"></span>BUY</span>
           <span class="lamp"><span class="bulb red" id="lampBurn"></span>BURN</span>
           <span class="lamp"><span class="bulb dim" id="lampIdle"></span>IDLE</span>
         </div>
@@ -1446,7 +1467,7 @@ export function renderHTML(): string {
 
       <!-- CENTER: incinerator viewport -->
       <div class="metal incinerator">
-        <div class="panel-label">PRIMARY INCINERATOR · UNIT 01</div>
+        <div class="panel-label">PRIMARY INCINERATOR</div>
         <div class="top-row">
           <div class="left">
             <span>▸ NEXT BURN IN</span>
@@ -1484,14 +1505,16 @@ export function renderHTML(): string {
       <!-- RIGHT: supply melt tower -->
       <div class="metal panel-right">
         <div class="panel-label">SUPPLY STACK</div>
-        <div class="melt-tower">
-          <div class="stack" id="meltStack" style="height: 96%"></div>
-          <div class="drips">
-            <span class="drip"></span><span class="drip"></span>
-            <span class="drip"></span><span class="drip"></span>
-          </div>
+        <div class="melt-wrap">
           <div class="scale">
             <span>100</span><span>75</span><span>50</span><span>25</span><span>0%</span>
+          </div>
+          <div class="melt-tower">
+            <div class="stack" id="meltStack" style="height: 96%"></div>
+            <div class="drips">
+              <span class="drip"></span><span class="drip"></span>
+              <span class="drip"></span><span class="drip"></span>
+            </div>
           </div>
         </div>
         <div class="melt-readout">
@@ -1505,7 +1528,7 @@ export function renderHTML(): string {
 
     <!-- LED SCOREBOARD — total burned -->
     <section class="scoreboard">
-      <div class="sticker rot-neg" style="top:-18px;left:-12px;">🔥 BURN COUNT <span class="arrow-down">↓</span></div>
+      <div class="sticker rot-neg" style="top:-26px;right:36px;">🔥 BURN COUNT <span class="arrow-down">↓</span></div>
       <div class="scoreboard-head">
         <div class="lbl">TOTAL INCINERATED</div>
         <div class="sublbl">on-chain · permanent · irreversible</div>

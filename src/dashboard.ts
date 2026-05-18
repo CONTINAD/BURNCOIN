@@ -158,17 +158,17 @@ export function renderHTML(): string {
     position: relative;
     background: linear-gradient(180deg, var(--hot), #7a0e15);
     color: #fff;
-    padding: 9px 0;
+    padding: 7px 0;
     overflow: hidden;
     border-top: 1px solid rgba(255,255,255,.1);
     border-bottom: 2px solid #2a0408;
-    box-shadow: 0 4px 18px rgba(225,29,42,.35), inset 0 -10px 18px rgba(0,0,0,.4);
+    box-shadow: 0 4px 18px rgba(225,29,42,.35), inset 0 -8px 14px rgba(0,0,0,.4);
     z-index: 4;
   }
   .marquee-track {
     display: flex;
     width: max-content;
-    font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: .25em; text-transform: uppercase;
+    font-family: 'Anton', sans-serif; font-size: 15px; letter-spacing: .22em; text-transform: uppercase;
     text-shadow: 0 2px 0 rgba(0,0,0,.45);
     animation: marqueeScroll 28s linear infinite;
     white-space: nowrap;
@@ -185,7 +185,7 @@ export function renderHTML(): string {
     position: relative;
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px; flex-wrap: wrap;
-    padding: 14px 26px;
+    padding: 10px 26px;
     background: linear-gradient(180deg, var(--steel-1), var(--steel-0));
     border-bottom: 1px solid #0d0c0e;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.04), inset 0 -1px 0 rgba(0,0,0,.6);
@@ -204,7 +204,7 @@ export function renderHTML(): string {
   .brand-block { display: flex; align-items: center; gap: 14px; }
   .brand-emblem {
     position: relative;
-    width: 56px; height: 56px;
+    width: 48px; height: 48px;
     display: flex; align-items: center; justify-content: center;
     filter: drop-shadow(0 0 14px rgba(255,138,30,.65)) drop-shadow(0 4px 6px rgba(0,0,0,.5));
     animation: brandSpin 22s linear infinite;
@@ -219,7 +219,7 @@ export function renderHTML(): string {
     display: flex; flex-direction: column; gap: 2px;
   }
   .brand-text .name {
-    font-family: 'Knewave', cursive; font-size: 30px;
+    font-family: 'Knewave', cursive; font-size: 26px;
     color: var(--flame-1); letter-spacing: .01em;
     text-shadow:
       2px 2px 0 #1a0a02,
@@ -231,9 +231,9 @@ export function renderHTML(): string {
   }
   .brand-text .name .ampersand { color: var(--ember); }
   .brand-text .sub {
-    font-family: 'Caveat Brush', cursive; font-size: 16px;
+    font-family: 'Caveat Brush', cursive; font-size: 14px;
     color: var(--ember); letter-spacing: .04em;
-    margin-top: 4px;
+    margin-top: 2px;
     transform: rotate(.5deg);
     display: inline-block;
     text-shadow: 1px 1px 0 rgba(0,0,0,.5);
@@ -287,11 +287,19 @@ export function renderHTML(): string {
     width: 100%;
     overflow: hidden;
     z-index: 3;
-    margin-top: 4px;
+    margin-top: 0;
+    max-height: 280px;
     border-bottom: 2px solid #0a0306;
-    box-shadow: 0 16px 60px rgba(0,0,0,.55);
+    box-shadow: 0 12px 36px rgba(0,0,0,.55);
   }
-  .banner-wrap img { width: 100%; height: auto; display: block; filter: saturate(1.08) contrast(1.05); }
+  .banner-wrap img {
+    width: 100%;
+    height: 280px;
+    display: block;
+    object-fit: cover;
+    object-position: center 38%;
+    filter: saturate(1.08) contrast(1.05);
+  }
   .banner-wrap::after {
     content: "";
     position: absolute; inset: 0;
@@ -316,25 +324,25 @@ export function renderHTML(): string {
   /* ── CONTAINER ───────────────────────────────────────────────────── */
   .container {
     max-width: 1380px; margin: 0 auto;
-    padding: 30px 26px 110px;
+    padding: 18px 26px 90px;
     position: relative; z-index: 3;
   }
 
   /* ── HERO BLOCK ──────────────────────────────────────────────────── */
   .hero {
     position: relative;
-    padding: 56px 0 32px;
+    padding: 28px 0 18px;
   }
   .hero .kicker {
     display: inline-flex; align-items: center; gap: 10px;
-    padding: 7px 14px;
+    padding: 6px 12px;
     background: rgba(225,29,42,.12);
     border: 1px solid rgba(225,29,42,.35);
     border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
     letter-spacing: .25em; text-transform: uppercase;
     color: var(--blood);
-    margin-bottom: 22px;
+    margin-bottom: 14px;
     box-shadow: 0 0 18px rgba(225,29,42,.15);
   }
   .hero .kicker .dot {
@@ -344,8 +352,8 @@ export function renderHTML(): string {
   }
   .hero h1 {
     font-family: 'Anton', sans-serif;
-    font-size: clamp(64px, 11vw, 168px);
-    line-height: .86;
+    font-size: clamp(46px, 7.4vw, 108px);
+    line-height: .9;
     letter-spacing: -.02em;
     margin: 0;
     color: var(--ink);
@@ -392,15 +400,15 @@ export function renderHTML(): string {
     50%      { filter: drop-shadow(0 0 42px rgba(255,200,90,.85)) brightness(1.18); }
   }
   .hero .lede {
-    margin-top: 26px;
+    margin-top: 18px;
     max-width: 640px;
-    font-size: 16px; line-height: 1.65;
+    font-size: 14.5px; line-height: 1.6;
     color: var(--ink-2);
   }
   .hero .lede b { color: var(--flame-2); font-weight: 700; }
   .hero .lede .hot { color: var(--ember); font-weight: 700; text-shadow: 0 0 12px rgba(255,201,51,.4); }
   .hero-actions {
-    margin-top: 26px;
+    margin-top: 18px;
     display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
   }
   .ca-box {
@@ -451,13 +459,13 @@ export function renderHTML(): string {
 
   /* ── INDUSTRIAL CONTROL PANEL (CENTERPIECE) ─────────────────────── */
   .control-panel {
-    margin-top: 18px;
+    margin-top: 14px;
     position: relative;
     display: grid;
-    grid-template-columns: 220px minmax(0, 1fr) 220px;
-    gap: 18px;
+    grid-template-columns: 200px minmax(0, 1fr) 200px;
+    gap: 16px;
     align-items: stretch;
-    min-height: 540px;
+    min-height: 440px;
   }
   /* shared metal panel base */
   .metal {
@@ -498,13 +506,13 @@ export function renderHTML(): string {
 
   /* LEFT panel: gauges */
   .panel-left {
-    padding: 36px 18px 28px;
-    display: flex; flex-direction: column; align-items: center; gap: 18px;
+    padding: 30px 16px 22px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
   }
   /* mercury-style temperature gauge */
   .gauge-temp {
     position: relative;
-    width: 56px; height: 320px;
+    width: 50px; height: 240px;
     background: linear-gradient(180deg, #0a0306, #1a0a08);
     border: 2px solid #0a0306;
     border-radius: 28px;
@@ -536,7 +544,7 @@ export function renderHTML(): string {
   }
   .gauge-temp .bulb-bottom {
     position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
-    width: 80px; height: 80px; border-radius: 50%;
+    width: 68px; height: 68px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, var(--core), var(--ember) 25%, var(--flame-0) 55%, var(--hot) 100%);
     box-shadow:
       0 0 30px rgba(255,138,30,.85),
@@ -569,12 +577,12 @@ export function renderHTML(): string {
 
   /* RIGHT panel: supply melt tower */
   .panel-right {
-    padding: 36px 22px 24px;
-    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    padding: 30px 18px 22px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
   }
   .melt-tower {
     position: relative;
-    width: 90px; height: 360px;
+    width: 80px; height: 280px;
     background: linear-gradient(180deg, #0a0306, #14070a);
     border: 2px solid #0a0306;
     border-radius: 10px;
@@ -653,8 +661,8 @@ export function renderHTML(): string {
   /* CENTER: incinerator viewport */
   .incinerator {
     position: relative;
-    padding: 22px 24px 26px;
-    display: flex; flex-direction: column; gap: 14px;
+    padding: 18px 20px 22px;
+    display: flex; flex-direction: column; gap: 12px;
   }
   .incinerator .top-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -672,9 +680,9 @@ export function renderHTML(): string {
   /* the viewport itself — wide rectangular furnace door with thick metal frame */
   .viewport-frame {
     position: relative;
-    flex: 1; min-height: 380px;
+    flex: 1; min-height: 310px;
     border-radius: 14px;
-    padding: 18px;
+    padding: 16px;
     background:
       linear-gradient(180deg, #2a2a2e 0%, #18181b 30%, #0c0c0e 100%);
     box-shadow:
@@ -841,9 +849,9 @@ export function renderHTML(): string {
 
   /* ── LED SCOREBOARD ──────────────────────────────────────────────── */
   .scoreboard {
-    margin-top: 30px;
+    margin-top: 24px;
     position: relative;
-    padding: 28px 32px 32px;
+    padding: 22px 26px 24px;
     border-radius: 14px;
     background:
       radial-gradient(ellipse at top, rgba(225,29,42,.12), transparent 60%),
@@ -902,7 +910,7 @@ export function renderHTML(): string {
   }
   .led-digit {
     font-family: 'VT323', monospace;
-    font-size: clamp(96px, 14vw, 192px);
+    font-size: clamp(72px, 10.5vw, 144px);
     line-height: .82;
     color: var(--ember);
     text-shadow:
@@ -931,8 +939,8 @@ export function renderHTML(): string {
     text-shadow: 0 0 14px rgba(255,138,30,.45);
   }
   .scoreboard-stats {
-    margin-top: 28px;
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+    margin-top: 18px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
     position: relative;
   }
   @media (max-width: 1100px) {
@@ -942,17 +950,17 @@ export function renderHTML(): string {
     .scoreboard-stats { grid-template-columns: repeat(2, 1fr); }
   }
   .sb-stat {
-    padding: 16px 18px;
+    padding: 14px 16px;
     background: linear-gradient(180deg, rgba(13,5,7,.7), rgba(5,2,4,.85));
     border: 1px solid rgba(255,106,0,.12);
     border-radius: 8px;
   }
   .sb-stat .k {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
     letter-spacing: .22em; text-transform: uppercase; color: var(--ink-dim);
   }
   .sb-stat .v {
-    font-family: 'VT323', monospace; font-size: 38px;
+    font-family: 'VT323', monospace; font-size: 32px;
     color: var(--flame-2); line-height: 1; margin-top: 4px;
     text-shadow: 0 0 12px rgba(255,138,30,.5);
   }
@@ -961,13 +969,13 @@ export function renderHTML(): string {
 
   /* ── RECEIPTS ROW ────────────────────────────────────────────────── */
   .section-head {
-    margin: 64px 0 28px;
+    margin: 40px 0 18px;
     display: flex; justify-content: space-between; align-items: flex-end;
     flex-wrap: wrap; gap: 12px;
   }
   .section-head .title {
     font-family: 'Knewave', cursive;
-    font-size: 48px; line-height: 1;
+    font-size: 38px; line-height: 1;
     color: var(--flame-1);
     letter-spacing: .005em;
     text-shadow:
@@ -977,17 +985,17 @@ export function renderHTML(): string {
     display: flex; align-items: center; gap: 16px;
     transform: rotate(-1deg);
   }
-  .section-head .title .glyph { color: var(--ember); font-size: 42px; transform: rotate(2deg); }
+  .section-head .title .glyph { color: var(--ember); font-size: 34px; transform: rotate(2deg); }
   .section-head .sub {
-    font-family: 'Caveat Brush', cursive; font-size: 22px;
+    font-family: 'Caveat Brush', cursive; font-size: 20px;
     color: var(--ember); letter-spacing: .03em;
     transform: rotate(-1deg);
     text-shadow: 1px 1px 0 rgba(0,0,0,.45);
   }
   .receipts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
   }
   .receipt {
     position: relative;
@@ -1151,7 +1159,7 @@ export function renderHTML(): string {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: inset 0 0 60px rgba(225,29,42,.05), 0 14px 40px rgba(0,0,0,.55);
-    max-height: 600px;
+    max-height: 460px;
     position: relative;
   }
   .console::after {
@@ -1177,7 +1185,7 @@ export function renderHTML(): string {
   .console-head .dots span.r { background: #c83a3a; box-shadow: inset 0 0 0 1px rgba(0,0,0,.6), 0 0 6px rgba(200,58,58,.5); }
   .console-head .dots span.y { background: #c89a3a; box-shadow: inset 0 0 0 1px rgba(0,0,0,.6); }
   .console-head .dots span.g { background: #3ac86a; box-shadow: inset 0 0 0 1px rgba(0,0,0,.6); }
-  .console-body { max-height: 540px; overflow-y: auto; padding: 8px 0; }
+  .console-body { max-height: 410px; overflow-y: auto; padding: 8px 0; }
   .console-body::-webkit-scrollbar { width: 6px; }
   .console-body::-webkit-scrollbar-thumb { background: rgba(255,106,0,.3); border-radius: 999px; }
   .ev {
@@ -1267,7 +1275,7 @@ export function renderHTML(): string {
     border-top: 2px solid var(--flame-0);
     overflow: hidden;
     z-index: 30;
-    height: 38px;
+    height: 32px;
     box-shadow: 0 -10px 28px rgba(0,0,0,.6), 0 -2px 18px rgba(255,106,0,.2);
   }
   .ticker-track {
@@ -1290,10 +1298,10 @@ export function renderHTML(): string {
   }
 
   .footer {
-    margin-top: 70px; text-align: center;
-    font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+    margin-top: 48px; text-align: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
     color: var(--ink-dim);
-    line-height: 1.8;
+    line-height: 1.7;
     padding-bottom: 50px; /* room for ticker */
   }
   .footer img {

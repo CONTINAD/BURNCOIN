@@ -1371,7 +1371,6 @@ export function renderHTML(): string {
       <a id="dexLink" href="https://dexscreener.com/solana" target="_blank" rel="noopener">DEX</a>
       <a id="pumpLink" href="https://pump.fun" target="_blank" rel="noopener">PUMP</a>
       <a href="https://x.com" target="_blank" rel="noopener">X</a>
-      <a href="https://t.me" target="_blank" rel="noopener">TG</a>
       <a id="mcPill" class="mc-pill" href="#" target="_blank" rel="noopener" title="DexScreener" style="display:none;">
         <span class="mc-label">MC</span><span id="mcValue">—</span>
       </a>
@@ -1392,7 +1391,7 @@ export function renderHTML(): string {
       <h1>
         <span class="line line1">EVERY</span>
         <span class="line line2">TWO MINUTES</span>
-        <span class="line line3">SUPPLY DIES.</span>
+        <span class="line line3">SUPPLY BURNS!</span>
         <span class="scrawl-note">burn baby<br/>burn 🔥<span class="arrow">↘</span></span>
       </h1>
       <p class="lede">

@@ -10,22 +10,41 @@ function req(key: string): string {
 const isAuto = (v: string | undefined) =>
   !v || v.trim() === "" || v.trim().toLowerCase() === "auto";
 
-const creatorKey = req("CREATOR_WALLET_PRIVATE_KEY");
-if (creatorKey.includes("PASTE_DEV_WALLET")) {
-  throw new Error(
-    "CREATOR_WALLET_PRIVATE_KEY is still the placeholder — paste your dev wallet's base58 private key into .env before launching."
-  );
-}
+// CREATOR_WALLET_PRIVATE_KEY is INTENTIONALLY non-fatal at boot.
+// If it's missing or still the placeholder, the bot loop just won't start —
+// but the dashboard still boots so the user can see what to fix.
+const rawCreatorKey = process.env.CREATOR_WALLET_PRIVATE_KEY?.trim() || "";
+const placeholderDetected = rawCreatorKey.includes("PASTE_DEV_WALLET");
+const creatorKey = placeholderDetected ? "" : rawCreatorKey;
 const buyerKey = process.env.BUYER_WALLET_PRIVATE_KEY?.trim() || creatorKey;
+
+let configError: string | null = null;
+if (!creatorKey) {
+  configError = placeholderDetected
+    ? "CREATOR_WALLET_PRIVATE_KEY is still the .env placeholder — paste your dev wallet's base58 private key in Railway → Variables."
+    : "CREATOR_WALLET_PRIVATE_KEY is not set — paste your dev wallet's base58 private key in Railway → Variables.";
+}
 
 const burnMintRaw = process.env.BURN_MINT?.trim();
 
+// SOLANA_RPC_URL: also non-fatal — falls back to public mainnet (rate-limited
+// but enough to render the dashboard with a config-error banner).
+const rpcUrl = process.env.SOLANA_RPC_URL?.trim() || "https://api.mainnet-beta.solana.com";
+if (!process.env.SOLANA_RPC_URL?.trim() && !configError) {
+  configError = "SOLANA_RPC_URL not set — using public RPC (rate-limited). Paste a Helius/QuickNode URL in Railway → Variables.";
+}
+
 export const config = {
-  rpcUrl: req("SOLANA_RPC_URL"),
+  rpcUrl,
 
   creatorPrivateKey: creatorKey,
   buyerPrivateKey: buyerKey,
-  singleWalletMode: buyerKey === creatorKey,
+  singleWalletMode: !creatorKey ? false : buyerKey === creatorKey,
+
+  // True only when the bot has everything it needs to actually run.
+  // If false, the dashboard still boots but the claim/burn loop is parked.
+  botReady: !!creatorKey,
+  configError,
 
   marketingWallet: process.env.MARKETING_WALLET?.trim() || "",
 

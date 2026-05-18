@@ -21,6 +21,24 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function main() {
   logger.info("=== $BURN — claim → buyback → INCINERATE → repeat ===");
 
+  // Always start the dashboard FIRST, before anything that could fail. This
+  // way a misconfigured deploy still renders a "fix me" page instead of 502.
+  startDashboard();
+  logger.info(`Dashboard live on PORT=${config.port}`);
+
+  if (!config.botReady) {
+    const msg = config.configError || "Bot is not configured.";
+    logger.error(`Bot loop NOT starting: ${msg}`);
+    tracker.setStatus("error");
+    tracker.recordError(msg);
+    tracker.setMaintenance(true, msg);
+    // Park here forever — the dashboard server keeps running so the user can
+    // see what's wrong. When they paste the wallet key in Railway, Railway
+    // auto-redeploys and we re-enter this same main() with a real config.
+    return;
+  }
+  tracker.setMaintenance(false);
+
   const creator = loadCreatorWallet();
   const buyer = loadBuyerWallet();
 
@@ -61,9 +79,6 @@ async function main() {
     marketingWallet: config.marketingWallet || creator.publicKey.toBase58(),
     burnMint: burnMintStr || "",
   });
-
-  startDashboard();
-  logger.info(`Dashboard live at http://localhost:${config.port}`);
 
   if (!burnMintStr) {
     tracker.setStatus("watching");
@@ -283,10 +298,26 @@ async function main() {
   const loop = async () => {
     while (!stopping) {
       await runCycle();
+      if (stopping) break;
       await sleep(config.cycleIntervalSeconds * 1000);
     }
   };
-  loop().catch((e) => logger.error(`Loop crashed: ${e instanceof Error ? e.message : e}`));
+  // Auto-restart the loop forever on any failure. Each runCycle() is already
+  // try/catch wrapped — this is defense-in-depth in case the loop itself
+  // (sleep, await) ever rejects.
+  const startLoop = async () => {
+    while (!stopping) {
+      try {
+        await loop();
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        logger.error(`Loop crashed: ${msg} — auto-restarting in 10s`);
+        tracker.recordError(`Loop crashed: ${msg} — auto-restarting in 10s`);
+        await sleep(10_000);
+      }
+    }
+  };
+  startLoop().catch((e) => logger.error(`startLoop crashed: ${e}`));
 
   process.on("SIGINT", () => {
     stopping = true;
@@ -301,7 +332,27 @@ async function main() {
   });
 }
 
+// Process-level catch-all: the container should NEVER exit on a thrown
+// promise or uncaught exception. Log it, write to the dashboard event feed,
+// and keep going. Only SIGINT/SIGTERM should exit.
+process.on("uncaughtException", (err) => {
+  const msg = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
+  logger.error(`UNCAUGHT EXCEPTION: ${msg}`);
+  try { tracker.recordError(`Uncaught: ${err instanceof Error ? err.message : err}`); } catch { /* nothing */ }
+});
+process.on("unhandledRejection", (reason) => {
+  const msg = reason instanceof Error ? `${reason.message}\n${reason.stack}` : String(reason);
+  logger.error(`UNHANDLED REJECTION: ${msg}`);
+  try { tracker.recordError(`Unhandled: ${reason instanceof Error ? reason.message : reason}`); } catch { /* nothing */ }
+});
+
 main().catch((e) => {
-  logger.error(`Fatal: ${e instanceof Error ? e.message : e}`);
-  process.exit(1);
+  // Last-resort log. main() itself shouldn't throw anymore because the
+  // dashboard starts before any failure-prone code, but we still log + keep
+  // the process alive so users can see SOMETHING when they hit the URL.
+  const msg = e instanceof Error ? `${e.message}\n${e.stack}` : String(e);
+  logger.error(`Fatal in main(): ${msg}`);
+  try { tracker.recordError(`Fatal: ${e instanceof Error ? e.message : e}`); } catch { /* nothing */ }
+  // DO NOT process.exit — Railway will keep restarting us. Stay alive so the
+  // dashboard server (which may have started before the throw) keeps serving.
 });

@@ -34,6 +34,9 @@ export class RewardsClaimer {
   }
 
   private async viaLightning(priority: number): Promise<string | null> {
+    // No `pool` param — collectCreatorFee auto-routes whether the token is
+    // still on the bonding curve OR has migrated to PumpSwap/Raydium. Hard-
+    // coding `pool: "pump"` here used to break claims right after graduation.
     const r = await fetch(
       `https://pumpportal.fun/api/trade?api-key=${config.pumpPortalApiKey}`,
       {
@@ -42,7 +45,6 @@ export class RewardsClaimer {
         body: JSON.stringify({
           action: "collectCreatorFee",
           priorityFee: priority,
-          pool: "pump",
         }),
       }
     );

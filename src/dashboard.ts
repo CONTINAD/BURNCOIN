@@ -1217,6 +1217,30 @@ export function renderHTML(): string {
   }
   .watch-banner .mono { color: var(--flame-2); }
 
+  /* maintenance banner — shown when CREATOR_WALLET_PRIVATE_KEY is not set */
+  .maint-banner {
+    display: none;
+    margin: 24px 0 0;
+    padding: 20px 26px;
+    background: linear-gradient(180deg, rgba(225,29,42,.18), rgba(225,29,42,.08));
+    border: 2px solid var(--blood);
+    border-radius: 8px;
+    box-shadow: 0 0 32px rgba(225,29,42,.25), inset 0 0 22px rgba(225,29,42,.18);
+    color: var(--ink);
+    position: relative;
+  }
+  .maint-banner.show { display: block; }
+  .maint-banner .head {
+    font-family: 'Knewave', cursive; font-size: 26px;
+    color: var(--blood); letter-spacing: .02em;
+    text-shadow: 2px 2px 0 #1a0a02;
+    margin-bottom: 8px;
+    transform: rotate(-1deg);
+    display: inline-block;
+  }
+  .maint-banner .body { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+  .maint-banner code { background: rgba(0,0,0,.55); color: var(--ember); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(255,138,30,.25); }
+
   .empty { padding: 38px; text-align: center; color: var(--ink-dim); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
 
   /* full-screen flame flash on each new burn */
@@ -1381,6 +1405,13 @@ export function renderHTML(): string {
       </div>
       <div class="watch-banner" id="watchBanner">
         ⏳ FURNACE COLD · watching <span id="watchWallet" class="mono"></span> for pump.fun launch
+      </div>
+      <div class="maint-banner" id="maintBanner">
+        <div class="head">⚠ FURNACE MAINTENANCE</div>
+        <div class="body" id="maintBody">
+          Bot is not running. <code>CREATOR_WALLET_PRIVATE_KEY</code> is not set on Railway.<br/>
+          Paste your dev wallet's base58 private key in <b>Railway → burncoin → Variables</b> and the bot will boot automatically.
+        </div>
       </div>
     </section>
 
@@ -1787,9 +1818,22 @@ function applyState(s) {
     ca.textContent = 'awaiting token launch…';
   }
 
-  // watch banner
+  // maintenance banner — when the bot can't run (e.g. wallet key missing)
+  const mb = $('maintBanner');
+  if (s.maintenance) {
+    mb.classList.add('show');
+    if (s.maintenanceReason) {
+      $('maintBody').innerHTML = escapeHtml(s.maintenanceReason)
+        .replace(/CREATOR_WALLET_PRIVATE_KEY/g, '<code>CREATOR_WALLET_PRIVATE_KEY</code>')
+        .replace(/Railway/g, '<b>Railway</b>');
+    }
+  } else {
+    mb.classList.remove('show');
+  }
+
+  // watch banner — only when bot IS running AND watching for a token launch
   const wb = $('watchBanner');
-  if (s.status === 'watching' && s.creatorWallet) {
+  if (!s.maintenance && s.status === 'watching' && s.creatorWallet) {
     wb.style.display = 'block';
     $('watchWallet').textContent = tShort(s.creatorWallet);
   } else {

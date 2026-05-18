@@ -11,6 +11,9 @@ export const connection = new Connection(config.rpcUrl, "confirmed");
 
 function decodeKey(secret: string): Keypair {
   const trimmed = secret.trim();
+  if (!trimmed) {
+    throw new Error("Wallet private key is empty — set CREATOR_WALLET_PRIVATE_KEY in Railway → Variables.");
+  }
   if (trimmed.startsWith("[")) {
     return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(trimmed)));
   }

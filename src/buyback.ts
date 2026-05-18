@@ -83,35 +83,49 @@ export class BuybackBurner {
     return { programId, decimals };
   }
 
+  /**
+   * Buyback retry chain: 6 attempts cycling through pump.fun's venues.
+   * pool="auto" handles 99% of cases but during the brief migration window
+   * (bonding curve closing, AMM not yet active) it can briefly fail. The
+   * explicit pool fallbacks recover from that without manual intervention.
+   *
+   * Sequence:
+   *   1. auto      — let PumpPortal pick (pre OR post-migration tokens)
+   *   2. auto      — retry with 2x priority (transient mempool congestion)
+   *   3. pump-amm  — PumpSwap explicitly (most graduated tokens)
+   *   4. raydium   — Raydium explicitly (older graduated tokens)
+   *   5. raydium-cpmm — Raydium CPMM (newer Raydium variant)
+   *   6. auto      — one more shot at auto with max priority
+   */
   private async sendBuyWithRetries(solAmount: number): Promise<string> {
+    const pools = ["auto", "auto", "pump-amm", "raydium", "raydium-cpmm", "auto"] as const;
     let lastErr: Error | null = null;
-    for (let attempt = 1; attempt <= 4; attempt++) {
-      const priority = config.priorityFee * Math.pow(2, attempt - 1);
+    for (let attempt = 1; attempt <= pools.length; attempt++) {
+      const pool = pools[attempt - 1];
+      const priority = config.priorityFee * Math.pow(2, Math.min(attempt - 1, 5)); // 1×,2×,4×,8×,16×,32×
       try {
-        const sig = await this.sendBuyOnce(solAmount, priority, attempt);
+        const sig = await this.sendBuyOnce(solAmount, priority, attempt, pool);
         const ok = await this.confirmWithHistoryFallback(sig);
         if (ok) {
-          if (attempt > 1) logger.info(`Buy landed on attempt ${attempt}/4.`);
+          if (attempt > 1) logger.info(`Buy landed on attempt ${attempt}/${pools.length} via pool=${pool}.`);
           return sig;
         }
-        logger.warn(`Buy attempt ${attempt}/4 did not confirm (${sig.slice(0, 12)}…) — escalating priority.`);
+        logger.warn(`Buy attempt ${attempt}/${pools.length} (pool=${pool}) did not confirm — trying next pool/priority.`);
       } catch (e) {
         lastErr = e instanceof Error ? e : new Error(String(e));
-        logger.warn(`Buy attempt ${attempt}/4 threw: ${lastErr.message}`);
+        logger.warn(`Buy attempt ${attempt}/${pools.length} (pool=${pool}) threw: ${lastErr.message}`);
       }
-      if (attempt < 4) await new Promise((r) => setTimeout(r, 1500));
+      if (attempt < pools.length) await new Promise((r) => setTimeout(r, 1500));
     }
-    throw lastErr || new Error("buy did not confirm after 4 attempts");
+    throw lastErr || new Error(`buy did not confirm after ${pools.length} attempts across all pools`);
   }
 
   private async sendBuyOnce(
     solAmount: number,
     priority: number,
-    attempt: number
+    attempt: number,
+    pool: "auto" | "pump-amm" | "raydium" | "raydium-cpmm" | "pump"
   ): Promise<string> {
-    // pool: "auto" lets PumpPortal route the buy to whichever venue the
-    // token is currently on — bonding curve pre-graduation, PumpSwap/Raydium
-    // post-graduation. Hardcoding "pump" breaks at graduation.
     const body = {
       publicKey: this.buyer.publicKey.toBase58(),
       action: "buy" as const,
@@ -120,7 +134,7 @@ export class BuybackBurner {
       denominatedInSol: "true",
       slippage: config.buybackSlippagePct,
       priorityFee: priority,
-      pool: "auto" as const,
+      pool,
     };
 
     const r = await fetch("https://pumpportal.fun/api/trade-local", {
@@ -141,7 +155,7 @@ export class BuybackBurner {
       skipPreflight: true,
       maxRetries: 5,
     });
-    logger.info(`Buy tx submitted (attempt ${attempt}, priority ${priority.toFixed(4)} SOL): ${sig.slice(0, 16)}…`);
+    logger.info(`Buy tx submitted (attempt ${attempt}, pool=${pool}, priority ${priority.toFixed(4)} SOL): ${sig.slice(0, 16)}…`);
     return sig;
   }
 

@@ -83,6 +83,11 @@ export interface DashboardState {
   topHolders: Array<{ owner: string; uiBalance: number; share: number }>;
   lastHolderSnapshotAt: number;
 
+  // Maintenance mode = the bot can't run (usually missing wallet key). The
+  // dashboard still renders but shows a banner explaining what to fix.
+  maintenance: boolean;
+  maintenanceReason: string;
+
   liveBurn?: LiveBurn;
   lastBurn?: BurnRecord;
 
@@ -125,6 +130,8 @@ function emptyState(): DashboardState {
     current: { creatorSol: 0, buyerSol: 0, holderCount: 0 },
     topHolders: [],
     lastHolderSnapshotAt: 0,
+    maintenance: false,
+    maintenanceReason: "",
     events: [],
     burns: [],
   };
@@ -229,6 +236,12 @@ class Tracker {
 
   setStatus(status: DashboardState["status"]) {
     this.state.status = status;
+    this.persist();
+  }
+
+  setMaintenance(maintenance: boolean, reason: string = "") {
+    this.state.maintenance = maintenance;
+    this.state.maintenanceReason = reason;
     this.persist();
   }
 

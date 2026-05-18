@@ -1498,7 +1498,7 @@ export function renderHTML(): string {
           <span id="caText">awaiting token launch…</span>
           <span style="opacity:.45">⎘</span>
         </div>
-        <a class="btn primary" id="buyBtn" href="https://pump.fun" target="_blank" rel="noopener">▸ CATCH $BURN</a>
+        <a class="btn primary" id="buyBtn" href="https://pump.fun" target="_blank" rel="noopener">▸ FEED THE FURNACE</a>
         <a class="btn ghost" id="chartBtn" href="https://dexscreener.com/solana" target="_blank" rel="noopener">CHART</a>
       </div>
       <div class="watch-banner" id="watchBanner">

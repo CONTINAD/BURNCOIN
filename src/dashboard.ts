@@ -1350,6 +1350,75 @@ export function renderHTML(): string {
     .ticker { height: 32px; }
     .ticker-track { font-size: 11px; }
     .receipt { transform: none !important; }
+    /* hero scrawl-note no longer absolute on mobile — fits under the h1 */
+    .hero .scrawl-note {
+      position: static;
+      display: inline-block;
+      transform: rotate(-3deg);
+      margin: 12px 0 0;
+      font-size: 22px;
+    }
+    .hero .scrawl-note .arrow { display: inline-block; transform: rotate(20deg) translate(4px, -2px); }
+    /* scoreboard: ditch the 180px right gutter — sticker repositions for mobile */
+    .scoreboard .scoreboard-head { padding-right: 0; }
+    .scoreboard .sticker {
+      font-size: 14px;
+      padding: 4px 9px;
+      top: -18px !important; right: 12px !important;
+      box-shadow: 3px 3px 0 rgba(0,0,0,.55);
+    }
+    /* hero h1 a touch smaller on phones so 3 lines breathe */
+    .hero h1 { font-size: clamp(40px, 11vw, 72px); line-height: .95; }
+    .hero .lede { font-size: 13.5px; }
+    /* control-strip brand block: keep on one row, smaller */
+    .control-strip { padding: 8px 14px; gap: 10px; }
+    .brand-emblem { width: 40px; height: 40px; }
+    .brand-text .sub { font-size: 12px; }
+    .brand-text .name { font-size: 20px; }
+    .strip-mid { gap: 6px; font-size: 10px; }
+    .strip-mid .lamp { padding: 4px 8px 4px 6px; font-size: 9.5px; }
+    /* scoreboard tighter */
+    .scoreboard { padding: 18px 18px 22px; }
+    .led-digit { font-size: clamp(56px, 14vw, 88px); }
+    .led-display .unit { font-size: 18px; margin-left: 8px; }
+    .sb-stat .v { font-size: 24px; }
+    .scoreboard-stats { gap: 10px; }
+    /* section headings tighter */
+    .section-head { margin: 32px 0 14px; }
+    .section-head .title { font-size: 28px; gap: 10px; }
+    .section-head .title .glyph { font-size: 24px; }
+    .section-head .sub { font-size: 16px; }
+    /* receipts: single column for breathing room on tall narrow screens */
+    .receipts { grid-template-columns: 1fr; }
+    /* ledger / holders tables fit narrow screens */
+    .ledger table { font-size: 11.5px; }
+    .ledger thead th, .ledger tbody td { padding: 10px 14px; }
+    .ledger .burn-amt { font-size: 15px; }
+    /* console rows: drop the fixed 80px label columns to flex */
+    .ev { grid-template-columns: 64px 70px 1fr; gap: 8px; padding: 7px 14px; font-size: 11.5px; }
+    .ev .ts { font-size: 10px; }
+    .ev .kind { font-size: 9.5px; }
+  }
+  /* tightest phones — keep scoreboard stats readable */
+  @media (max-width: 560px) {
+    .scoreboard-stats { grid-template-columns: 1fr 1fr; }
+    .sb-stat { padding: 12px 14px; }
+    .sb-stat .v { font-size: 22px; }
+    /* the 5th stat (NEXT BUDGET) spans full width so it doesn't orphan */
+    .scoreboard-stats .sb-stat:last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 400px) {
+    .container { padding: 18px 12px 80px; }
+    .hero h1 { font-size: clamp(36px, 12vw, 60px); }
+    .hero .lede { font-size: 13px; }
+    .brand-text .sub { display: none; }
+    .strip-mid .lamp { padding: 3px 6px 3px 5px; font-size: 9px; letter-spacing: .08em; }
+    .strip-mid .lamp .bulb { width: 7px; height: 7px; }
+    .led-digit { font-size: clamp(48px, 16vw, 72px); }
+    /* sticker fully above the scoreboard top so it can never touch the title */
+    .scoreboard .sticker { font-size: 11px; padding: 4px 8px; top: -30px !important; right: 10px !important; }
+    .scoreboard { margin-top: 32px; /* room for the sticker hanging above */ }
+    .scoreboard .lbl { font-size: 18px; }
   }
 </style>
 </head>

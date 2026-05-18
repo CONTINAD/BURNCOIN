@@ -9,7 +9,7 @@ export interface HolderEntry {
 }
 
 /**
- * Snapshot every wallet currently holding $BURN. Requires a paid RPC
+ * Snapshot every wallet currently holding $BurnCoin. Requires a paid RPC
  * (Helius/QuickNode/Triton) because free RPCs disable getProgramAccounts.
  * Sums balances per owner across multiple token accounts.
  */

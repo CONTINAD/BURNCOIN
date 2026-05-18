@@ -19,7 +19,7 @@ import { logger } from "./logger";
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function main() {
-  logger.info("=== $BURN — claim → buyback → INCINERATE → repeat ===");
+  logger.info("=== $BurnCoin — claim → buyback → INCINERATE → repeat ===");
 
   // Always start the dashboard FIRST, before anything that could fail. This
   // way a misconfigured deploy still renders a "fix me" page instead of 502.
@@ -70,7 +70,7 @@ async function main() {
   const cached = tracker.snapshot().burnMint;
   if (!burnMintStr && cached && cached.length > 32) {
     burnMintStr = cached;
-    logger.info(`Resuming with previously detected $BURN: ${burnMintStr}`);
+    logger.info(`Resuming with previously detected $BurnCoin: ${burnMintStr}`);
   }
 
   tracker.setIdentity({
@@ -82,7 +82,7 @@ async function main() {
 
   if (!burnMintStr) {
     tracker.setStatus("watching");
-    tracker.recordInfo(`Watching ${creator.publicKey.toBase58()} for pump.fun $BURN launch…`);
+    tracker.recordInfo(`Watching ${creator.publicKey.toBase58()} for pump.fun $BurnCoin launch…`);
     logger.info(`Auto-detect mode: polling for token creation every ${config.mintWatchPollSeconds}s`);
     burnMintStr = await waitForCreatedMint(
       connection,
@@ -92,7 +92,7 @@ async function main() {
         if (n === 1 || n % 5 === 0) tracker.recordInfo(`Still watching for token creation… (poll #${n})`);
       }
     );
-    tracker.recordInfo(`Detected $BURN mint: ${burnMintStr} — the furnace is lit.`);
+    tracker.recordInfo(`Detected $BurnCoin mint: ${burnMintStr} — the furnace is lit.`);
     tracker.setIdentity({
       creatorWallet: creator.publicKey.toBase58(),
       buyerWallet: buyer.publicKey.toBase58(),
@@ -102,7 +102,7 @@ async function main() {
   }
 
   const burnMint = new PublicKey(burnMintStr);
-  logger.info(`$BURN mint:        ${burnMint.toBase58()}`);
+  logger.info(`$BurnCoin mint:        ${burnMint.toBase58()}`);
 
   const claimer = new RewardsClaimer(creator);
   const burner = new BuybackBurner(buyer, burnMint);

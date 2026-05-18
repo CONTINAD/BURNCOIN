@@ -30,8 +30,8 @@ export function renderHTML(): string {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>$BURN — INCINERATOR ONLINE</title>
-<meta property="og:title" content="$BURN — INCINERATOR ONLINE" />
+<title>$BurnCoin — INCINERATOR ONLINE</title>
+<meta property="og:title" content="$BurnCoin — INCINERATOR ONLINE" />
 <meta property="og:description" content="Every 2 minutes. Auto-claim. Auto-buyback. Auto-incinerate. The supply only goes down." />
 <meta property="og:image" content="/burn-banner.png" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -1447,9 +1447,9 @@ export function renderHTML(): string {
   <!-- TOP CONTROL STRIP -->
   <div class="control-strip">
     <div class="brand-block">
-      <div class="brand-emblem"><img src="/burncoin-pfp.png" alt="$BURN" /></div>
+      <div class="brand-emblem"><img src="/burncoin-pfp.png" alt="$BurnCoin" /></div>
       <div class="brand-text">
-        <div class="name">$BURN</div>
+        <div class="name">$BurnCoin</div>
         <div class="sub">~ the supply only goes down ~</div>
       </div>
     </div>
@@ -1488,7 +1488,7 @@ export function renderHTML(): string {
       <p class="lede">
         Self-operating pump.fun incinerator. Every <span class="marker"><b><span id="cycleSec">120</span> seconds</b></span>
         the bot claims creator fees from the dev wallet, spends <span class="hot"><span id="buybackPct">100</span>%</span>
-        of them buying back <b>$BURN</b> on pump.fun, then <span class="marker"><b>burns 100% of the tokens it bought</b></span>
+        of them buying back <b>$BurnCoin</b> on pump.fun, then <span class="marker"><b>burns 100% of the tokens it bought</b></span>
         via on-chain SPL burn — <b>mint.supply literally decrements</b>. Forever.
         The bot can only spend measured claim deltas, so the dev's principal is untouchable.
       </p>
@@ -1590,7 +1590,7 @@ export function renderHTML(): string {
         <div class="melt-readout">
           <div class="pct"><span id="pctBurned">0.00</span><span class="unit">%</span></div>
           <div class="lbl">SUPPLY DESTROYED</div>
-          <div class="supply-line"><span id="currentSupplyTop">—</span> $BURN LEFT</div>
+          <div class="supply-line"><span id="currentSupplyTop">—</span> $BurnCoin LEFT</div>
         </div>
         <div class="rivet-bl"></div><div class="rivet-br"></div>
       </div>
@@ -1605,7 +1605,7 @@ export function renderHTML(): string {
       </div>
       <div class="led-display">
         <span class="led-digit" id="totalBurnedLed">0</span>
-        <span class="unit">$BURN</span>
+        <span class="unit">$BurnCoin</span>
       </div>
       <div class="scoreboard-stats">
         <div class="sb-stat hot">
@@ -1649,7 +1649,7 @@ export function renderHTML(): string {
           <tr>
             <th>Cycle</th>
             <th class="right">SOL Spent</th>
-            <th class="right">$BURN Incinerated</th>
+            <th class="right">$BurnCoin Incinerated</th>
             <th>Buy Tx</th>
             <th>Burn Tx</th>
             <th class="right">When</th>
@@ -1670,7 +1670,7 @@ export function renderHTML(): string {
           <tr>
             <th style="width:60px;">#</th>
             <th>Wallet</th>
-            <th class="right">$BURN held</th>
+            <th class="right">$BurnCoin held</th>
             <th class="right">% of supply (ex-dev)</th>
           </tr>
         </thead>
@@ -1693,7 +1693,7 @@ export function renderHTML(): string {
 
     <div class="footer">
       <img src="/burncoin-pfp.png" alt="" />
-      $BURN is a memecoin for entertainment only. The bot only spends measured claim deltas — the dev's principal is never touched. Buyback amounts depend on claimable fees and continued operation. Not financial advice.
+      $BurnCoin is a memecoin for entertainment only. The bot only spends measured claim deltas — the dev's principal is never touched. Buyback amounts depend on claimable fees and continued operation. Not financial advice.
       <br/><span style="color:var(--flame-1)">THE FURNACE NEVER STOPS.</span>
     </div>
   </div>
@@ -2054,7 +2054,7 @@ function renderHolders(holders, s) {
       + '<tr>'
       +   '<td><span class="rank '+ rankCls +'">'+ rank +'</span></td>'
       +   '<td><a href="https://solscan.io/account/'+ h.owner +'" target="_blank" rel="noopener">'+ tShort(h.owner) +'</a></td>'
-      +   '<td class="right"><span class="burn-amt">'+ fmtTok(h.uiBalance) +'<span class="unit">$BURN</span></span></td>'
+      +   '<td class="right"><span class="burn-amt">'+ fmtTok(h.uiBalance) +'<span class="unit">$BurnCoin</span></span></td>'
       +   '<td class="right"><span class="share-bar"><i style="width:'+ Math.min(100, pct).toFixed(1) +'%"></i></span>'+ pct.toFixed(pct >= 1 ? 2 : 3) +'%</td>'
       + '</tr>';
   }).join('');
@@ -2085,13 +2085,13 @@ function renderReceipts(burns) {
       + '<div class="receipt">'
       +   '<div class="washi"></div>'
       +   '<div class="stamp">BURNED</div>'
-      +   '<div class="head">$BURN INCINERATOR<span class="sub">UNIT 01 · BAY 1</span></div>'
+      +   '<div class="head">$BurnCoin INCINERATOR<span class="sub">UNIT 01 · BAY 1</span></div>'
       +   '<div class="row"><span class="k">CYCLE</span><span class="v">#'+ (b.cycle || 0) +'</span></div>'
       +   '<div class="row"><span class="k">DATE</span><span class="v">'+ dt.toLocaleDateString() +'</span></div>'
       +   '<div class="row"><span class="k">TIME</span><span class="v">'+ dt.toLocaleTimeString() +'</span></div>'
       +   '<div class="row"><span class="k">SOL SPENT</span><span class="v">'+ fmt(b.solSpent, 4) +' SOL</span></div>'
-      +   '<div class="row"><span class="k">$BURN PRICE</span><span class="v">~'+ (b.solSpent && b.tokensBurnedUi ? (b.solSpent / b.tokensBurnedUi).toExponential(2) : '—') +' SOL</span></div>'
-      +   '<div class="total"><div class="k" style="font-size:10px;color:#6a3a18;">INCINERATED</div><div class="v">'+ fmtTok(b.tokensBurnedUi) +' $BURN</div></div>'
+      +   '<div class="row"><span class="k">$BurnCoin PRICE</span><span class="v">~'+ (b.solSpent && b.tokensBurnedUi ? (b.solSpent / b.tokensBurnedUi).toExponential(2) : '—') +' SOL</span></div>'
+      +   '<div class="total"><div class="k" style="font-size:10px;color:#6a3a18;">INCINERATED</div><div class="v">'+ fmtTok(b.tokensBurnedUi) +' $BurnCoin</div></div>'
       +   '<div class="footer-line">BUY · <a href="https://solscan.io/tx/'+ b.buyTx +'" target="_blank" rel="noopener">'+ (b.buyTx ? b.buyTx.slice(0,10)+'…' : '—') +'</a></div>'
       +   '<div class="footer-line">BURN · <a href="https://solscan.io/tx/'+ b.burnTx +'" target="_blank" rel="noopener">'+ (b.burnTx ? b.burnTx.slice(0,10)+'…' : '—') +'</a></div>'
       +   '<div class="footer-line" style="margin-top:8px;font-weight:700;">★ THANK YOU FOR HOLDING ★</div>'
@@ -2109,7 +2109,7 @@ function renderLedger(burns) {
     + '<tr>'
     +   '<td><span class="cycle-tag">#'+ (b.cycle || 0) +'</span></td>'
     +   '<td class="right">'+ fmt(b.solSpent, 4) +' SOL</td>'
-    +   '<td class="right"><span class="burn-amt">'+ fmtTok(b.tokensBurnedUi) +'<span class="unit">$BURN</span></span></td>'
+    +   '<td class="right"><span class="burn-amt">'+ fmtTok(b.tokensBurnedUi) +'<span class="unit">$BurnCoin</span></span></td>'
     +   '<td>'+ (b.buyTx ? '<a href="https://solscan.io/tx/'+ b.buyTx +'" target="_blank" rel="noopener">'+ b.buyTx.slice(0,10) +'…</a>' : '—') +'</td>'
     +   '<td>'+ (b.burnTx ? '<a href="https://solscan.io/tx/'+ b.burnTx +'" target="_blank" rel="noopener">'+ b.burnTx.slice(0,10) +'…</a>' : '—') +'</td>'
     +   '<td class="right" style="color: var(--ink-dim)">'+ since(b.ts) +'</td>'
@@ -2145,7 +2145,7 @@ function renderTicker(burns) {
     recent.forEach(b => {
       items.push(
         '<span class="item"><span class="arrow">▶</span> BURN #' + (b.cycle||0) + ' · INCINERATED ' +
-        '<span class="num">' + fmtTok(b.tokensBurnedUi) + '</span> $BURN · ' +
+        '<span class="num">' + fmtTok(b.tokensBurnedUi) + '</span> $BurnCoin · ' +
         fmt(b.solSpent, 4) + ' SOL · ' +
         '<a href="https://solscan.io/tx/' + b.burnTx + '" target="_blank" rel="noopener" style="color:var(--flame-1);text-decoration:none">' + (b.burnTx ? b.burnTx.slice(0,8)+'…' : 'tx') + '</a></span>'
       );

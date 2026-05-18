@@ -50,13 +50,13 @@ export class BuybackBurner {
 
     const tokensBurnedUi = Number(tokensBoughtRaw) / Math.pow(10, decimals);
     logger.info(
-      `Bought ${tokensBurnedUi.toFixed(4)} $BURN for ${solSpent.toFixed(6)} SOL — incinerating now.`
+      `Bought ${tokensBurnedUi.toFixed(4)} $BurnCoin for ${solSpent.toFixed(6)} SOL — incinerating now.`
     );
 
     const burnTx = await this.burnAll(tokensBoughtRaw, decimals, programId);
     await this.awaitConfirm(burnTx, "burn");
 
-    logger.info(`🔥 Incinerated ${tokensBurnedUi.toFixed(4)} $BURN — supply reduced. tx ${burnTx}`);
+    logger.info(`🔥 Incinerated ${tokensBurnedUi.toFixed(4)} $BurnCoin — supply reduced. tx ${burnTx}`);
 
     return {
       buyTx,

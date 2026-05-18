@@ -52,7 +52,7 @@ export interface DashboardState {
   buyerWallet: string;
   marketingWallet: string;
   burnMint: string;
-  totalSupplyUi: number;     // current on-chain supply of $BURN (decrements as we burn)
+  totalSupplyUi: number;     // current on-chain supply of $BurnCoin (decrements as we burn)
   decimals: number;
 
   totals: {
@@ -318,7 +318,7 @@ class Tracker {
     };
     this.push({
       ts: Date.now(), type: "buyback",
-      message: `🔥 Buying back ${solAmount.toFixed(6)} SOL of $BURN — fuel inbound`,
+      message: `🔥 Buying back ${solAmount.toFixed(6)} SOL of $BurnCoin — fuel inbound`,
       amountSol: solAmount,
     });
     this.persist();
@@ -369,7 +369,7 @@ class Tracker {
 
     this.push({
       ts: Date.now(), type: "burn",
-      message: `🔥 Incinerated ${p.tokensBurnedUi.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BURN — supply down forever`,
+      message: `🔥 Incinerated ${p.tokensBurnedUi.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BurnCoin — supply down forever`,
       txSignature: p.burnTx,
       amountSol: p.solSpent,
       amountTokens: p.tokensBurnedUi,
